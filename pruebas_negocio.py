@@ -320,12 +320,14 @@ def _escenarios():
             DatoInvalidoError, t.incidentes.cerrar, inc.codigo, "", usuario=t.analista
         )
     )(t.crear_incidente()))
-    agregar("cierre_con_causa_raíz", lambda t: (
-        lambda inc: t.assertEqual(
-            t.incidentes.cerrar(inc.codigo, "Parche faltante", usuario=t.analista).estado,
-            EstadoIncidente.CERRADO,
+    def comprobar_cierre_con_equipo_inhabilitado(t):
+        incidente = t.crear_incidente()
+        t.equipo.inhabilitar()
+        cerrado = t.incidentes.cerrar(
+            incidente.codigo, "Parche faltante", usuario=t.analista
         )
-    )(t.crear_incidente()))
+        t.assertEqual(cerrado.estado, EstadoIncidente.CERRADO)
+    agregar("cierre_con_causa_raíz", comprobar_cierre_con_equipo_inhabilitado)
     agregar("lección_aprendida_es_opcional", lambda t: (
         lambda inc: t.assertIsNone(
             t.incidentes.cerrar(inc.codigo, "Causa identificada", usuario=t.analista)
