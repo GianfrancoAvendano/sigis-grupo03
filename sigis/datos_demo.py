@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta
 
 from .enums import OrigenAlerta
-from .modelo import Analista
+from .enums import EstadoIncidente
 
 
 def cargar(auth, equipos, incidentes):
@@ -58,7 +58,7 @@ def cargar(auth, equipos, incidentes):
         elif indice % 3 == 0:
             incidente.fecha_cierre = ahora - timedelta(days=indice % 4, hours=1)
             incidente.causa_raiz = "Análisis de causa completado para la demostración"
-            incidente.estado = incidentes.buscar(incidente.codigo).estado.CERRADO
+            incidente.estado = EstadoIncidente.CERRADO
 
     return {
         "usuarios": len(auth.repo.usuarios),

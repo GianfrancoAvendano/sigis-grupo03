@@ -299,8 +299,6 @@ class ServicioIncidentes(ServicioBase):
 
 def construir_sistema(ruta_guardado=None):
     """Construye el repositorio y servicios compartidos por ambas interfaces."""
-    from .patrones import Repositorio
-
     repo = Repositorio()
     notificador = Notificador()
     from .patrones import GuardadoAutomatico
@@ -310,4 +308,6 @@ def construir_sistema(ruta_guardado=None):
     incidentes = ServicioIncidentes(repo, notificador)
     incidentes.calculadora = CalculadoraIndicadores(repo)
     incidentes.reporte = GeneradorReporteMensual(repo, incidentes.calculadora, equipos)
+    from .reporte_docx import GeneradorReporteWord
+    incidentes.reporte_word = GeneradorReporteWord(repo, incidentes.calculadora, equipos)
     return repo, auth, equipos, incidentes

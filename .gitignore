@@ -159,6 +159,9 @@ ENV/
 env.bak/
 venv.bak/
 
+# Local application state and daily backups
+datos/
+
 # Spyder project settings
 .spyderproject
 .spyproject
