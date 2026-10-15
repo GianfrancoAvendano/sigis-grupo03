@@ -99,7 +99,8 @@ def _accion_a_dic(a):
 # --- reconstruccion -------------------------------------------------------
 def _dic_a_usuario(d):
     clase = JefeTI if d["es_jefe"] else Analista
-    u = clase(d["nombre_usuario"], d["nombre_completo"], d["hash"])
+    u = clase(d["nombre_usuario"], d["nombre_completo"], d["hash"],
+              hash_guardado=True)
     u.bloqueado = d.get("bloqueado", False)
     u.intentos_fallidos = d.get("intentos_fallidos", 0)
     return u
