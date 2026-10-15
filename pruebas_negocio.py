@@ -1,6 +1,8 @@
 """Pruebas automatizadas de reglas de negocio (64 escenarios independientes)."""
 
 import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from datetime import datetime, timedelta
@@ -41,6 +43,31 @@ def _esperar_error(tipo, funcion, *args, **kwargs):
     except tipo:
         return
     raise AssertionError(f"Se esperaba {tipo.__name__}.")
+
+
+class PruebasInicio(unittest.TestCase):
+    def test_almacen_directo_indica_puntos_de_entrada(self):
+        ruta = os.path.join(os.path.dirname(__file__), "sigis", "almacen.py")
+        with tempfile.TemporaryDirectory() as directorio:
+            resultado = subprocess.run(
+                [sys.executable, ruta], cwd=directorio,
+                capture_output=True, text=True, timeout=10,
+            )
+        self.assertEqual(resultado.returncode, 1)
+        self.assertIn("python main.py", resultado.stderr)
+        self.assertIn("python web.py", resultado.stderr)
+        self.assertNotIn("Traceback", resultado.stderr)
+        self.assertNotIn("ImportError", resultado.stderr)
+
+    def test_importar_almacen_como_paquete(self):
+        resultado = subprocess.run(
+            [sys.executable, "-c", "from sigis import almacen; assert callable(almacen.cargar)"],
+            cwd=os.path.dirname(__file__),
+            capture_output=True, text=True, timeout=10,
+        )
+        self.assertEqual(resultado.returncode, 0, resultado.stderr)
+        self.assertEqual(resultado.stdout, "")
+        self.assertEqual(resultado.stderr, "")
 
 
 class PruebaEscenario(unittest.TestCase):
@@ -460,6 +487,7 @@ def _escenarios():
 
 def load_tests(loader, tests, pattern):
     suite = unittest.TestSuite()
+    suite.addTests(loader.loadTestsFromTestCase(PruebasInicio))
     for nombre, escenario in _escenarios():
         suite.addTest(PruebaEscenario(nombre, escenario))
     return suite

@@ -16,6 +16,13 @@ import json
 import os
 from datetime import date, datetime
 
+if __name__ == "__main__":
+    raise SystemExit(
+        "almacen.py es un modulo interno de SIGIS, no un punto de entrada. "
+        "Desde la carpeta del proyecto, ejecuta python main.py (consola) "
+        "o python web.py (interfaz web)."
+    )
+
 from .enums import EstadoEquipo, EstadoIncidente, Criticidad, OrigenAlerta
 from .modelo import AccionAuditoria, Analista, Equipo, JefeTI
 

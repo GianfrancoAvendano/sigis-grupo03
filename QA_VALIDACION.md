@@ -126,3 +126,32 @@ atribuyen hallazgos a pantallas que no existen.
 Los hallazgos heurísticos son observaciones de usabilidad, no fallos de reglas de
 negocio. El filtro textual y el diseño de tabla no impidieron las rutas o
 acciones probadas, pero conviene considerarlos en una iteración de interfaz.
+
+## Actualización web del 15 de octubre de 2026
+
+Esta actualización complementa la evidencia histórica anterior. Se contrastaron
+las pantallas de consola y las funciones del README con las rutas HTTP reales.
+
+- Completadas las pantallas de alta y cambio de estado de equipos para jefatura;
+  los intentos de administración de un analista reciben HTTP 403.
+- Corregido el cierre de sesión: el formulario ahora envía el token CSRF y la
+  sesión queda invalidada. Una solicitud sin token sigue recibiendo HTTP 403.
+- Separados los formularios de atención: escalamiento y falso positivo ya no
+  comparten dos campos `motivo` dentro de una misma solicitud.
+- Incorporados filtros combinables y CSV con los mismos criterios, cancelación
+  en altas, historial por incidente y visualización del estado/plazo ANPD.
+- Corregido `crear_aplicacion(ruta_guardado)`: carga y guarda en la ruta indicada,
+  sin leer el archivo habitual cuando se configura una instancia temporal.
+- Conservados fuera de `sigis/web/` los módulos de dominio, persistencia,
+  informes y consola. El README incluye la justificación y la matriz de rutas.
+
+Verificación automatizada: `python pruebas_web.py`, **13 pruebas HTTP exitosas**.
+Incluye ciclo completo de incidente, descarte, equipos, permisos, CSRF, filtros,
+entradas inválidas, escape HTML, descargas y aislamiento de datos.
+
+Verificación en navegador con datos temporales: panel, listado, registro,
+equipos, alta de equipos, indicadores, reporte y bitácora respondieron HTTP 200
+a anchos de 1366 y 390 px, sin desbordamiento horizontal del documento. También
+se comprobaron el detalle abierto/cerrado y el alta/cambio de estado de un equipo
+desde sus controles. Se inspeccionaron capturas de la lista móvil y del detalle
+en escritorio; no se agregan imágenes de evidencia al repositorio.
